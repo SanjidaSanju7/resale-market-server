@@ -23,6 +23,7 @@ async function run() {
     try {
 
         const categoriesCollection = client.db('resaleMarket').collection('categories');
+        const productsCollection = client.db('resaleMarket').collection('products');
 
 
         // all categories
@@ -32,13 +33,25 @@ async function run() {
             const category = await cursor.toArray();
             res.send(category);
         });
-        // categories by id
-        app.get('/categories/:id', async (req, res) => {
+
+        app.get('/products', async (req, res) => {
+            const query = {}
+            const cursor = productsCollection.find(query);
+            const product = await cursor.toArray();
+            res.send(product);
+        });
+
+        // all products by id
+
+        app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: ObjectId(id) }
-            const category = await categoriesCollection.findOne(query);
-            res.send(category)
+            const query = { category_id: id }
+            const products = await productsCollection.findOne(query);
+            res.send(products);
         })
+
+
+
 
     }
     finally {
