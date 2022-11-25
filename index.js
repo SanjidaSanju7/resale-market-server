@@ -34,6 +34,14 @@ async function run() {
             res.send(category);
         });
 
+        app.get('/categories/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const categories = await categoriesCollection.findOne(query);
+            res.send(categories);
+        })
+
+        //get all products
         app.get('/products', async (req, res) => {
             const query = {}
             const cursor = productsCollection.find(query);
@@ -41,12 +49,12 @@ async function run() {
             res.send(product);
         });
 
-        // all products by id
+        //  products by id
 
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
             const query = { category_id: id }
-            const products = await productsCollection.findOne(query);
+            const products = await productsCollection.find(query).toArray();
             res.send(products);
         })
 
