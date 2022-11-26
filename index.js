@@ -24,6 +24,7 @@ async function run() {
 
         const categoriesCollection = client.db('resaleMarket').collection('categories');
         const productsCollection = client.db('resaleMarket').collection('products');
+        const bookingsCollection = client.db('resaleMarket').collection('bookings')
 
 
         // all categories
@@ -58,7 +59,20 @@ async function run() {
             res.send(products);
         })
 
+        // bookings
 
+        app.post('/bookings', async (req, res) => {
+            const booking = req.body;
+            const result = await bookingsCollection.insertOne(booking);
+            res.send(result)
+        })
+
+        app.get('/bookings', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const bookings = await bookingsCollection.find(query).toArray();
+            res.send(bookings)
+        })
 
 
     }
