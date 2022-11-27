@@ -82,6 +82,19 @@ async function run() {
             res.send(products);
         });
 
+        // add a product
+        app.post('/products', async (req, res) => {
+            const product = req.body;
+            const result = await productsCollection.insertOne(product);
+            res.send(result);
+        });
+
+        app.get('/productCategory', async (req, res) => {
+            const query = {};
+            const result = await categoriesCollection.find(query).project({ categoryName: 1 }).toArray();
+            res.send(result)
+        })
+
         // bookings
 
         app.post('/bookings', async (req, res) => {
@@ -120,6 +133,14 @@ async function run() {
             const query = { email }
             const user = await usersCollection.findOne(query);
             res.send({ isAdmin: user?.role === 'admin' });
+        });
+
+        // users seller route
+        app.get('/users/seller/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email }
+            const user = await usersCollection.findOne(query);
+            res.send({ isSeller: user?.role === 'seller' });
         })
 
         // all users
