@@ -48,6 +48,7 @@ async function run() {
         const productsCollection = client.db('resaleMarket').collection('products');
         const bookingsCollection = client.db('resaleMarket').collection('bookings');
         const usersCollection = client.db('resaleMarket').collection('users');
+        const myProductsCollection = client.db('resaleMarket').collection('myproducts');
 
         const verifyAdmin = async (req, res, next) => {
             const decodedEmail = req.decoded.email;
@@ -95,9 +96,9 @@ async function run() {
         });
 
         // add a product
-        app.post('/products', async (req, res) => {
-            const product = req.body;
-            const result = await productsCollection.insertOne(product);
+        app.post('/myproducts', async (req, res) => {
+            const myproduct = req.body;
+            const result = await myProductsCollection.insertOne(myproduct);
             res.send(result);
         });
 
@@ -107,22 +108,32 @@ async function run() {
             res.send(result)
         });
 
-        // // my products query
-        // app.get('/my-products', async (req, res) => {
-        //     const email = req.query.email;
-        //     const query = { email: email };
-        //     const products = await productsCollection.find(query).toArray();
-        //     res.send(products)
-        // });
+        // get my product
 
-        // categoryName query
-        app.get('/category-name', async (req, res) => {
-            const categoryName = req.query.categoryName;
-            const query = { categoryName: categoryName };
-            const products = await productsCollection.find(query).toArray();
-            res.send(products)
+        app.get('/myproducts', async (req, res) => {
+            const query = {}
+            const cursor = myProductsCollection.find(query);
+            const myproduct = await cursor.toArray();
+            res.send(myproduct);
+
+        })
+
+        // my products query
+        app.get('/myproducts', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const myproducts = await myProductsCollection.find(query).toArray();
+            res.send(myproducts)
         });
 
+        // delete my products api
+
+        app.get('/myproducts/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await myProductsCollection.deleteOne(filter);
+            res.send(result)
+        })
 
 
         // bookings
