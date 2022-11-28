@@ -128,7 +128,7 @@ async function run() {
 
         // delete my products api
 
-        app.get('/myproducts/:id', async (req, res) => {
+        app.delete('/myproducts/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const result = await myProductsCollection.deleteOne(filter);
@@ -155,6 +155,13 @@ async function run() {
             const bookings = await bookingsCollection.find(query).toArray();
             res.send(bookings)
         });
+
+        app.get('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await bookingsCollection.findOne(query);
+            res.send(result);
+        })
 
         // jwt 
         app.get('/jwt', async (req, res) => {
